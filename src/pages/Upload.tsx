@@ -28,7 +28,7 @@ function Upload(): JSX.Element {
   };
 
   const handleTestFileData = (): void => {
-    Papa.parse(import.meta.env.VITE_REACT_APP_BASENAME + "/blackBoxData.csv", {
+    Papa.parse(import.meta.env.VITE_DATA_SOURCE, {
       complete: (results: ParseResult<object>) => {
         if (results.errors.length > 1) {
           // we are expecting 1 error because that is how the file ends
