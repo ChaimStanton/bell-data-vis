@@ -7,7 +7,7 @@ export interface VisualProp {
 
 /** A base class for all visual graphs */
 export abstract class Visual<
-  PropType extends VisualProp
+  PropType extends VisualProp,
 > extends Component<PropType> {
   static width = 1024;
   static height = 579;

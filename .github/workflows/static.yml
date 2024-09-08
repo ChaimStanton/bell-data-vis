@@ -40,6 +40,7 @@ jobs:
         env:
           # VITE_REACT_APP_BASENAME: "/bell-data-vis"
           VITE_REACT_APP_BASENAME:
+          VITE_DATA_SOURCE: "https://chaimstanton.co.uk/bell-data-vis-example-data-public/filtered_blackBoxData.csv"
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

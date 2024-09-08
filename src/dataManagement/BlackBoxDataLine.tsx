@@ -13,7 +13,7 @@ export class BlackBoxDataLine {
       // make a data coordinate object using the latitude and longitude from dataRow
       this.coord = new DataCoordinate(
         parseFloat(dataRow.Latitude),
-        parseFloat(dataRow.Longitude)
+        parseFloat(dataRow.Longitude),
       );
     } catch (err) {
       console.log(err);
