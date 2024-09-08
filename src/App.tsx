@@ -10,7 +10,7 @@ const basename = import.meta.env.VITE_REACT_APP_BASENAME;
 
 function App(): JSX.Element {
   const [data, setData] = React.useState<BlackBoxDataObj | undefined>(
-    undefined
+    undefined,
   );
   return (
     <DataContext.Provider value={{ data, setData }}>
