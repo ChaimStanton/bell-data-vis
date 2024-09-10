@@ -1,50 +1,39 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import DataContext from "../dataContext";
-import Papa, { ParseResult } from "papaparse";
-import { BlackBoxDataObj } from "../dataManagement/BlackBoxDataObj";
 import { Container, Button } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
+import { DbConn } from "../DbConn";
 
 function Upload(): JSX.Element {
-  const { setData } = useContext(DataContext); // we don't need the data here because it should be empty
-
-  const [csvData, setCsvData] = useState<unknown[]>([]); // Define the type of csvData
+  const { setIsLoaded } = useContext(DataContext); // we don't need the data here because it should be empty
 
   const navFunc = useNavigate();
 
-  const handleNewFile = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleNewFile = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ): Promise<void> => {
     if (e.target.files?.[0] != null) {
-      Papa.parse(e.target.files?.[0], {
-        complete: (result) => {
-          // Handle the parsed data here
-          const parsedData: unknown[] = result.data;
-          setCsvData(parsedData);
-        },
-        header: true, // Set this to true if your CSV has headers
-        skipEmptyLines: true,
-      });
+      const file = e.target.files[0];
+      const filePath = URL.createObjectURL(file);
+      await DbConn.loadCSV(filePath);
+      await DbConn.getTelematicData();
+      setIsLoaded(true);
     }
   };
 
-  const handleTestFileData = (): void => {
-    Papa.parse(import.meta.env.VITE_DATA_SOURCE, {
-      complete: (results: ParseResult<object>) => {
-        if (results.errors.length > 1) {
-          // we are expecting 1 error because that is how the file ends
-          console.log(results);
-          throw new Error("There were errors in the parsing of the csv");
-        }
-        setData(new BlackBoxDataObj(results.data));
-        navFunc("/");
-      },
-      download: true,
-      header: true,
-    });
+  const handleTestFileData = async (): Promise<void> => {
+    try {
+      await DbConn.loadCSV(import.meta.env.VITE_DATA_SOURCE);
+      // await DbConn.getInstance().getAllData();
+      setIsLoaded(true);
+      navFunc("/");
+    } catch (error) {
+      console.error("There were errors in the parsing of the csv", error);
+    }
   };
 
   const moveOnToNextStage = (): void => {
-    setData(new BlackBoxDataObj(csvData)); // Update the context data with parsed CSV data
     navFunc("/");
   };
 

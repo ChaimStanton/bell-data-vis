@@ -1,12 +1,17 @@
+import { Table } from "apache-arrow";
+import "leaflet/dist/leaflet.css";
 import { type ReactNode } from "react";
-import { CircleMarker, MapContainer, Popup, TileLayer } from "react-leaflet";
-import { type BlackBoxDataLine } from "../dataManagement/BlackBoxDataLine";
+import { Container } from "react-bootstrap";
+import { CircleMarker, MapContainer, TileLayer } from "react-leaflet";
+import { DbConn } from "../DbConn";
 import { MapLegend } from "./MapLegend";
 import { Visual, type VisualProp } from "./Visual";
-import { Container } from "react-bootstrap";
-import "leaflet/dist/leaflet.css";
 
-export class BlackBoxMap extends Visual<VisualProp> {
+type stateType = {
+  data: Table | null;
+};
+
+export class BlackBoxMap extends Visual<VisualProp, stateType> {
   readonly #colorMap: Map<string, string> = new Map<string, string>([
     ["RTP_EVT_JOURNEY_START", "green"],
     ["RTP_EVT_JOURNEY_END", "red"],
@@ -19,9 +24,22 @@ export class BlackBoxMap extends Visual<VisualProp> {
 
   constructor(props: VisualProp) {
     super("Bell Black Box data of Chaim Stanton", "blackBoxMap", props);
+    this.state = {
+      data: null,
+    };
+  }
+
+  componentDidMount(): void {
+    DbConn.getTelematicData().then((data) => {
+      this.setState({ data: data });
+    });
   }
 
   render(): ReactNode {
+    if (this.state.data == null) {
+      return <div>Loading...</div>;
+    }
+
     return (
       <Container>
         <MapContainer
@@ -36,8 +54,30 @@ export class BlackBoxMap extends Visual<VisualProp> {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
 
-          {this.props.data.dataLines.map((line: BlackBoxDataLine) => {
-            if (Number.isNaN(line.coord.lng) || Number.isNaN(line.coord.lat)) {
+          {this.state.data.toArray().map((line) => {
+            const lineJSON = line.toJSON();
+            return (
+              <CircleMarker
+                center={{
+                  lat: lineJSON["Latitude"],
+                  lng: lineJSON["Longitude"],
+                }}
+                key={
+                  lineJSON["Journey Event ID"] + ":" + lineJSON["Journey ID"]
+                }
+                radius={10}
+                // color="black"
+                // weight={1}
+                fillColor={this.#colorMap.get(lineJSON[2])}
+                fillOpacity={1}
+              >
+                {/* <Popup>{line.toString()}</Popup> */}
+              </CircleMarker>
+            );
+          })}
+
+          {/* {this.props.data.dataLines.map((line: BlackBoxDataLine) => {
+            if (Number.isNaN(line.lng) || Number.isNaN(line.lat)) {
               // console.log("nan error" + line.coord.toString());
               return false;
             } else if (
@@ -45,8 +85,8 @@ export class BlackBoxMap extends Visual<VisualProp> {
             ) {
               return (
                 <CircleMarker
-                  center={[line.coord.lat, line.coord.lng]}
-                  key={line.coord.debugRef}
+                  center={[line.lat, line.lng]}
+                  key={line.debugRef}
                   radius={10}
                   // color="black"
                   // weight={1}
@@ -59,7 +99,7 @@ export class BlackBoxMap extends Visual<VisualProp> {
             } else {
               return false;
             }
-          })}
+          })} */}
         </MapContainer>
         <MapLegend colorMap={this.#colorMap} />
       </Container>

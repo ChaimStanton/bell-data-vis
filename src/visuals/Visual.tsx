@@ -1,14 +1,15 @@
 import { Component } from "react";
-import { type BlackBoxDataObj } from "../dataManagement/BlackBoxDataObj";
+import { DbConn } from "../DbConn";
 
 export interface VisualProp {
-  data: BlackBoxDataObj;
+  data: DbConn;
 }
 
 /** A base class for all visual graphs */
 export abstract class Visual<
   PropType extends VisualProp,
-> extends Component<PropType> {
+  stateType,
+> extends Component<PropType, stateType> {
   static width = 1024;
   static height = 579;
   readonly name: string;
@@ -24,16 +25,4 @@ export abstract class Visual<
     this.name = name;
     this.id = id;
   }
-
-  // superSetup(): void {
-  //   // this actually gets called from the draw function
-  //   this.canvas = createCanvas(Visual.width, Visual.height);
-  //   this.canvas.parent("app");
-  //   this.setup?.();
-  // }
-
-  // superDestroy(): void {
-  //   this.canvas.remove();
-  //   this.destroy?.();
-  // }
 }
