@@ -1,22 +1,22 @@
-import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import MainAppPage from "./pages/MainAppPage";
 import { PageNotFound } from "./pages/PageNotFound";
 import Upload from "./pages/Upload";
-import { BlackBoxDataObj } from "./dataManagement/BlackBoxDataObj";
 import DataContext from "./dataContext";
+import { useState } from "react";
+import { DbConn } from "./DbConn";
 
-const basename = import.meta.env.VITE_REACT_APP_BASENAME;
-
-function App(): JSX.Element {
-  const [data, setData] = React.useState<BlackBoxDataObj | undefined>(
-    undefined,
-  );
+export default function App(): JSX.Element {
+  new DbConn(); // just to initialize the database connection and setup WASM stuff;
+  const [isLoaded, setIsLoaded] = useState(false);
   return (
-    <DataContext.Provider value={{ data, setData }}>
-      <BrowserRouter basename={basename}>
+    <DataContext.Provider value={{ isLoaded, setIsLoaded }}>
+      <BrowserRouter basename={import.meta.env.VITE_REACT_APP_BASENAME}>
         <Routes>
-          <Route path="/" element={<MainAppPage />} />
+          <Route
+            path="/"
+            element={isLoaded ? <MainAppPage /> : <Navigate to="/upload" />}
+          />
           <Route path="/upload" element={<Upload />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
@@ -24,5 +24,3 @@ function App(): JSX.Element {
     </DataContext.Provider>
   );
 }
-
-export default App;

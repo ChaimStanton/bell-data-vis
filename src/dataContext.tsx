@@ -1,14 +1,10 @@
-import { BlackBoxDataObj } from "./dataManagement/BlackBoxDataObj";
-import { createContext } from "react";
+import React from "react";
 
-export type DataContextType = {
-  data: BlackBoxDataObj | undefined;
-  setData: React.Dispatch<React.SetStateAction<BlackBoxDataObj | undefined>>;
-};
+interface DataContextType {
+  isLoaded: boolean;
+  setIsLoaded: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-const DataContext = createContext<DataContextType>({
-  data: undefined,
-  setData: () => {}, // Provide a default no-op function
-});
+const DataContext = React.createContext<DataContextType>({} as DataContextType);
 
 export default DataContext;
