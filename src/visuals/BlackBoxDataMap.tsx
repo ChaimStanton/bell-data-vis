@@ -2,10 +2,11 @@ import { Table } from "apache-arrow";
 import "leaflet/dist/leaflet.css";
 import { type ReactNode } from "react";
 import { Container } from "react-bootstrap";
-import { CircleMarker, MapContainer, TileLayer } from "react-leaflet";
+import { CircleMarker, MapContainer, Popup, TileLayer } from "react-leaflet";
 import { DbConn } from "../DbConn";
 import { MapLegend } from "./MapLegend";
 import { Visual, type VisualProp } from "./Visual";
+import JSONBig from "json-big";
 
 type stateType = {
   data: Table | null;
@@ -66,40 +67,15 @@ export class BlackBoxMap extends Visual<VisualProp, stateType> {
                   lineJSON["Journey Event ID"] + ":" + lineJSON["Journey ID"]
                 }
                 radius={10}
-                // color="black"
-                // weight={1}
-                fillColor={this.#colorMap.get(lineJSON[2])}
+                fillColor={this.#colorMap.get(lineJSON["Event Description"])}
                 fillOpacity={1}
               >
-                {/* <Popup>{line.toString()}</Popup> */}
+                <Popup maxWidth={500}>
+                  <p>{JSONBig.stringify(lineJSON)}</p>
+                </Popup>
               </CircleMarker>
             );
           })}
-
-          {/* {this.props.data.dataLines.map((line: BlackBoxDataLine) => {
-            if (Number.isNaN(line.lng) || Number.isNaN(line.lat)) {
-              // console.log("nan error" + line.coord.toString());
-              return false;
-            } else if (
-              !(line["Event Description"] === "RTP_EVT_DA_JOURNEY_DETAIL_V3")
-            ) {
-              return (
-                <CircleMarker
-                  center={[line.lat, line.lng]}
-                  key={line.debugRef}
-                  radius={10}
-                  // color="black"
-                  // weight={1}
-                  fillColor={this.#colorMap.get(line["Event Description"])}
-                  fillOpacity={1}
-                >
-                  <Popup>{line.toString()}</Popup>
-                </CircleMarker>
-              );
-            } else {
-              return false;
-            }
-          })} */}
         </MapContainer>
         <MapLegend colorMap={this.#colorMap} />
       </Container>

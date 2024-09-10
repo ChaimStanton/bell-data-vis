@@ -28,6 +28,9 @@ importers:
       bootstrap:
         specifier: ^5.3.3
         version: 5.3.3(@popperjs/core@2.11.8)
+      json-big:
+        specifier: ^1.0.2
+        version: 1.0.2
       leaflet:
         specifier: ^1.9.4
         version: 1.9.4
@@ -992,6 +995,12 @@ packages:
         integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==,
       }
 
+  bignumber.js@9.1.2:
+    resolution:
+      {
+        integrity: sha512-2/mKyZH9K85bzOEfhXDBFZTGd1CTs+5IHpeFQo9luiBG7hghdC851Pj2WAhb6E3R6b9tZj/XKhbg4fum+Kepug==,
+      }
+
   bootstrap@5.3.3:
     resolution:
       {
@@ -1450,6 +1459,12 @@ packages:
         integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==,
       }
     hasBin: true
+
+  json-big@1.0.2:
+    resolution:
+      {
+        integrity: sha512-o77ndb+SgKSocZ94ewjr0nsJcJw4WIlKQArPjaQhSeZE4dIzXMiwaWDBrw9+xP1ErLwvF960qFaWhASSIIg55Q==,
+      }
 
   json-bignum@0.0.3:
     resolution:
@@ -2545,6 +2560,8 @@ snapshots:
 
   balanced-match@1.0.2: {}
 
+  bignumber.js@9.1.2: {}
+
   bootstrap@5.3.3(@popperjs/core@2.11.8):
     dependencies:
       "@popperjs/core": 2.11.8
@@ -2821,6 +2838,10 @@ snapshots:
   js-yaml@4.1.0:
     dependencies:
       argparse: 2.0.1
+
+  json-big@1.0.2:
+    dependencies:
+      bignumber.js: 9.1.2
 
   json-bignum@0.0.3: {}
 
